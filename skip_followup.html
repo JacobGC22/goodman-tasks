@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skip Followup</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy:#1B3A8C; --gold:#F5A800; --bg:#F4F6FB; --danger:#C0392B; --text:#1a1a1a; --muted:#888; --border:#D6DCF0; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .card { background:white; border:1px solid var(--border); border-radius:16px; padding:40px 32px; text-align:center; max-width:360px; width:100%; box-shadow:0 2px 12px rgba(27,58,140,0.08); }
+    .logo-bar { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:28px; }
+    .logo-dot { width:10px; height:10px; background:var(--gold); border-radius:50%; }
+    .logo-text { font-size:14px; font-weight:700; color:var(--navy); }
+    .icon { width:56px; height:56px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:24px; color:white; }
+    .icon.error { background:var(--danger); }
+    .icon.loading { background:var(--navy); animation:pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    h2 { font-size:20px; font-weight:600; color:var(--text); margin-bottom:8px; }
+    p { font-size:15px; color:var(--muted); line-height:1.5; }
+    .back-link { display:inline-block; margin-top:24px; color:var(--navy); font-size:14px; font-weight:500; text-decoration:none; }
+    .back-link:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-bar"><div class="logo-dot"></div><span class="logo-text">Goodman Tasks</span></div>
+    <div class="icon loading" id="icon">⋯</div>
+    <h2 id="title">Skipping followup...</h2>
+    <p id="message"></p>
+    <a href="/goodman-tasks/" class="back-link" id="backLink" style="display:none">← Back to tasks</a>
+  </div>
+  <script>
+    const SUPABASE_URL = 'https://tnrjbgcjbcqqdawcrrer.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Cm52EN6Ro7s_97xoMgW-UA_Yzy1r-oY';
+
+    function getMountainDate() {
+      return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+    }
+
+    async function skipFollowup() {
+      const icon = document.getElementById('icon');
+      const title = document.getElementById('title');
+      const message = document.getElementById('message');
+      const backLink = document.getElementById('backLink');
+      const today = getMountainDate();
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/settings`, {
+          method:'POST',
+          headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+          body: JSON.stringify({key:'skip_followup_date', value:{date:today}})
+        });
+        if (!res.ok) throw new Error('Failed');
+
+        icon.textContent='✓'; icon.className='icon';
+        title.textContent='Followup skipped';
+        message.textContent="You won't get the 4:30pm email today.";
+        backLink.style.display='inline-block';
+
+      } catch(e) {
+        icon.textContent='✕'; icon.className='icon error';
+        title.textContent='Something went wrong';
+        message.textContent='Could not skip the followup.';
+        backLink.style.display='inline-block';
+        console.error(e);
+      }
+    }
+
+    skipFollowup();
+  </script>
+</body>
+</html>

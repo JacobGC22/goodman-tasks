@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Complete</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1B3A8C;
+      --gold: #F5A800;
+      --bg: #F4F6FB;
+      --danger: #C0392B;
+      --text: #1a1a1a;
+      --muted: #888;
+      --border: #D6DCF0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 2px 12px rgba(27,58,140,0.08);
+    }
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .logo-dot { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; }
+    .logo-text { font-size: 14px; font-weight: 700; color: var(--navy); }
+    .icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 24px; color: white;
+    }
+    .icon.error { background: var(--danger); }
+    .icon.loading { background: var(--navy); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+    h2 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    p { font-size: 15px; color: var(--muted); line-height: 1.5; }
+    .task-name {
+      font-weight: 500; color: var(--text); margin: 12px 0;
+      padding: 10px 14px; background: var(--bg); border-radius: 8px; font-size: 15px;
+    }
+    .back-link {
+      display: inline-block; margin-top: 24px;
+      color: var(--navy); font-size: 14px; font-weight: 500; text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-bar">
+      <div class="logo-dot"></div>
+      <span class="logo-text">Goodman Tasks</span>
+    </div>
+    <div class="icon loading" id="icon">⋯</div>
+    <h2 id="title">Marking complete...</h2>
+    <p id="message"></p>
+    <div class="task-name" id="taskName" style="display:none"></div>
+    <a href="/goodman-tasks/" class="back-link" id="backLink" style="display:none">← Back to tasks</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://tnrjbgcjbcqqdawcrrer.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Cm52EN6Ro7s_97xoMgW-UA_Yzy1r-oY';
+
+    function getNextWeeklyDate(fromDateStr, recurrenceDay) {
+      const [y, m, d] = fromDateStr.split('-').map(Number);
+      const base = new Date(y, m - 1, d);
+      const jsDay = recurrenceDay === 6 ? 0 : recurrenceDay + 1;
+      let next = new Date(base);
+      next.setDate(next.getDate() + 1);
+      while (next.getDay() !== jsDay) next.setDate(next.getDate() + 1);
+      return next.toISOString().split('T')[0];
+    }
+
+    function getMonthlyEndDate(fromDateStr) {
+      const [y, m] = fromDateStr.split('-').map(Number);
+      let nm = m + 1, ny = y;
+      if (nm > 12) { nm = 1; ny++; }
+      const lastDay = new Date(ny, nm, 0).getDate();
+      const targetDay = lastDay - 2;
+      return `${ny}-${String(nm).padStart(2,'0')}-${String(targetDay).padStart(2,'0')}`;
+    }
+
+    function getMountainDate() {
+      return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+    }
+
+    async function spawnNextRecurrence(task) {
+      if (!task.recurrence_type) return;
+      let nextDueDate, isHidden = false;
+
+      if (task.recurrence_type === 'weekly') {
+        if (task.recurrence_day === null || task.recurrence_day === undefined) return;
+        nextDueDate = getNextWeeklyDate(task.due_date || getMountainDate(), task.recurrence_day);
+      } else if (task.recurrence_type === 'monthly_end') {
+        nextDueDate = getMonthlyEndDate(task.due_date || getMountainDate());
+        const today = getMountainDate();
+        const [ty, tm] = today.split('-').map(Number);
+        const [ny, nm] = nextDueDate.split('-').map(Number);
+        if (ny > ty || nm > tm) isHidden = true;
+      }
+
+      if (!nextDueDate) return;
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          task_name: task.task_name,
+          due_date: nextDueDate,
+          status: 'open',
+          category: task.category || null,
+          notes: task.notes || null,
+          recurrence_type: task.recurrence_type,
+          recurrence_day: task.recurrence_day ?? null,
+          parent_task_id: task.parent_task_id || task.id,
+          is_hidden: isHidden
+        })
+      });
+      if (!res.ok) throw new Error('Failed to spawn next recurrence');
+    }
+
+    async function completeTask() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const icon = document.getElementById('icon');
+      const title = document.getElementById('title');
+      const message = document.getElementById('message');
+      const taskName = document.getElementById('taskName');
+      const backLink = document.getElementById('backLink');
+
+      if (!id) {
+        icon.textContent = '✕'; icon.className = 'icon error';
+        title.textContent = 'Invalid link';
+        message.textContent = 'This link is missing a task ID.';
+        backLink.style.display = 'inline-block';
+        return;
+      }
+
+      try {
+        const fetchRes = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}&select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const tasks = await fetchRes.json();
+
+        if (!tasks || tasks.length === 0) {
+          icon.textContent = '✕'; icon.className = 'icon error';
+          title.textContent = 'Task not found';
+          message.textContent = 'This task may have already been deleted.';
+          backLink.style.display = 'inline-block';
+          return;
+        }
+
+        const task = tasks[0];
+
+        if (task.status === 'complete') {
+          icon.textContent = '✓'; icon.className = 'icon';
+          title.textContent = 'Already done';
+          message.textContent = 'This task was already marked complete.';
+          taskName.textContent = task.task_name;
+          taskName.style.display = 'block';
+          backLink.style.display = 'inline-block';
+          return;
+        }
+
+        const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ status: 'complete' })
+        });
+        if (!patchRes.ok) throw new Error('Patch failed');
+
+        // Spawn next recurrence if needed
+        if (task.recurrence_type) {
+          try {
+            await spawnNextRecurrence(task);
+          } catch (e) {
+            console.error('Failed to spawn next recurrence:', e);
+            // Don't fail the whole completion — just log it
+          }
+        }
+
+        icon.textContent = '✓'; icon.className = 'icon';
+        title.textContent = 'Done';
+        message.textContent = task.recurrence_type
+          ? 'Task complete. Next instance scheduled.'
+          : 'Task marked complete.';
+        taskName.textContent = task.task_name;
+        taskName.style.display = 'block';
+        backLink.style.display = 'inline-block';
+
+      } catch (e) {
+        icon.textContent = '✕'; icon.className = 'icon error';
+        title.textContent = 'Something went wrong';
+        message.textContent = 'Could not complete this task. Try again or open the dashboard.';
+        backLink.style.display = 'inline-block';
+        console.error(e);
+      }
+    }
+
+    completeTask();
+  </script>
+</body>
+</html>
