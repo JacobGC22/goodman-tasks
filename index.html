@@ -19,7 +19,6 @@
       --border: #D6DCF0;
       --danger: #C0392B;
       --danger-light: #FDF0EF;
-      --success: #1B3A8C;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +31,6 @@
       padding: 0 0 100px;
     }
 
-    /* Header */
     .app-header {
       background: var(--navy);
       padding: 16px 20px;
@@ -44,28 +42,31 @@
       z-index: 100;
     }
 
-    .app-header h1 {
-      font-size: 17px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: -0.3px;
+    .app-header h1 { font-size: 17px; font-weight: 700; color: white; letter-spacing: -0.3px; }
+    .header-dot { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; }
+
+    .tab-nav { display: flex; background: var(--navy-dark); padding: 0 16px; }
+
+    .tab-btn {
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
     }
 
-    .header-dot {
-      width: 10px;
-      height: 10px;
-      background: var(--gold);
-      border-radius: 50%;
-    }
+    .tab-btn.active { color: white; border-bottom-color: var(--gold); }
 
-    /* Main content */
-    .content {
-      padding: 20px 16px;
-      max-width: 680px;
-      margin: 0 auto;
-    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    /* Add form */
+    .content { padding: 20px 16px; max-width: 680px; margin: 0 auto; }
+
     .add-form {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -75,34 +76,9 @@
       box-shadow: 0 1px 6px rgba(27,58,140,0.07);
     }
 
-    .form-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 14px;
-    }
-
-    .form-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .field-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 5px;
-    }
+    .form-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+    .form-grid { display: flex; flex-direction: column; gap: 10px; }
+    .field-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
 
     input[type="text"],
     input[type="date"],
@@ -119,31 +95,52 @@
       color: var(--text);
       outline: none;
       transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--navy);
-    }
-
+    input:focus, select:focus, textarea:focus { border-color: var(--navy); }
     input[type="date"] { color: var(--muted); }
     input[type="date"]:valid { color: var(--text); }
 
-    textarea {
-      resize: vertical;
-      min-height: 72px;
-      font-size: 13px;
-      line-height: 1.5;
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A8099' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
     }
 
-    .recurrence-row {
+    textarea { resize: vertical; min-height: 72px; font-size: 13px; line-height: 1.5; }
+
+    .more-options-btn {
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      cursor: pointer;
+      padding: 4px 0;
     }
 
-    #recurrenceDayWrapper {
-      flex: 1;
+    .more-options-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+
+    .advanced-fields {
       display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
     }
+
+    .advanced-fields.open { display: flex; }
+
+    .recurrence-row { display: flex; gap: 10px; }
+    #recurrenceDayWrapper { flex: 1; display: none; }
 
     .btn-add {
       width: 100%;
@@ -178,22 +175,8 @@
     .toast.error { background: var(--danger); }
     .toast.show { display: block; }
 
-    /* Filter bar */
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .filter-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .filter-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
     .filter-chip {
       padding: 5px 12px;
@@ -211,10 +194,7 @@
     .filter-chip:hover { border-color: var(--navy); color: var(--navy); }
     .filter-chip.active { background: var(--navy); border-color: var(--navy); color: white; }
 
-    /* Section groups */
-    .task-group {
-      margin-bottom: 24px;
-    }
+    .task-group { margin-bottom: 24px; }
 
     .group-header {
       display: flex;
@@ -229,39 +209,57 @@
     }
 
     .group-header.overdue { background: var(--danger); }
-    .group-header.this-week { background: var(--navy); }
     .group-header.later { background: #3A5FAF; }
     .group-header.no-date { background: #6B7A9E; }
-
-    .group-header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .group-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: white;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .group-count {
-      font-size: 11px;
-      color: rgba(255,255,255,0.7);
-    }
-
-    .group-chevron {
-      font-size: 11px;
-      color: rgba(255,255,255,0.7);
-      transition: transform 0.2s;
-    }
-
+    .group-header-left { display: flex; align-items: center; gap: 8px; }
+    .group-title { font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px; }
+    .group-count { font-size: 11px; color: rgba(255,255,255,0.7); }
+    .group-chevron { font-size: 11px; color: rgba(255,255,255,0.7); transition: transform 0.2s; }
     .group-chevron.collapsed { transform: rotate(-90deg); }
-
     .group-body { display: flex; flex-direction: column; gap: 8px; }
     .group-body.collapsed { display: none; }
+
+    /* Client tab */
+    .client-section { margin-bottom: 28px; }
+
+    .client-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--navy);
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .client-section-title { font-size: 13px; font-weight: 700; color: white; }
+    .client-section-count { font-size: 12px; color: rgba(255,255,255,0.65); }
+
+    .client-section-body {
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+
+    .client-section-body.collapsed { display: none; }
+
+    .client-subgroup-header {
+      padding: 6px 14px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: white;
+    }
+
+    .client-subgroup-header.overdue { background: var(--danger); }
+    .client-subgroup-header.this-week { background: #3A5FAF; }
+    .client-subgroup-header.later { background: #5B7ABF; }
+    .client-subgroup-header.no-date { background: #8A94B0; }
+
+    .client-subgroup-tasks { padding: 8px; display: flex; flex-direction: column; gap: 8px; background: var(--bg); }
 
     /* Task cards */
     .task-card {
@@ -270,80 +268,47 @@
       border-radius: 10px;
       padding: 14px 16px;
       box-shadow: 0 1px 4px rgba(27,58,140,0.05);
-      position: relative;
     }
 
     .task-card.overdue { border-left: 3px solid var(--danger); }
     .task-card.due-today { border-left: 3px solid var(--gold); }
 
-    .task-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
+    .task-top { display: flex; align-items: flex-start; gap: 12px; }
 
     .complete-btn {
-      width: 22px;
-      height: 22px;
-      min-width: 22px;
+      width: 22px; height: 22px; min-width: 22px;
       border-radius: 50%;
       border: 2px solid var(--border);
       background: transparent;
       cursor: pointer;
       margin-top: 2px;
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color 0.15s;
       flex-shrink: 0;
     }
 
     .complete-btn:hover { border-color: var(--navy); }
-
     .task-main { flex: 1; min-width: 0; }
-
-    .task-name {
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.4;
-      color: var(--text);
-      word-break: break-word;
-    }
-
-    .task-meta {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 5px;
-    }
-
-    .due-label {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
+    .task-name { font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--text); word-break: break-word; }
+    .task-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+    .due-label { font-size: 12px; color: var(--muted); }
     .due-label.overdue { color: var(--danger); font-weight: 500; }
     .due-label.today { color: #8A6A00; font-weight: 500; }
 
     .category-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      background: var(--navy-light);
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--navy);
-      letter-spacing: 0.2px;
+      display: inline-block; padding: 2px 8px;
+      background: var(--navy-light); border-radius: 4px;
+      font-size: 11px; font-weight: 600; color: var(--navy);
     }
 
-    .recur-label {
-      font-size: 11px;
-      color: var(--muted);
+    .client-tag {
+      display: inline-block; padding: 2px 8px;
+      background: var(--gold-light); border: 1px solid #F5D080;
+      border-radius: 4px; font-size: 11px; font-weight: 600; color: #7A5500;
     }
 
-    .task-actions {
-      display: flex;
-      gap: 6px;
-      margin-top: 8px;
-    }
+    .recur-label { font-size: 11px; color: var(--muted); }
+
+    .task-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 
     .action-btn {
       padding: 4px 10px;
@@ -358,12 +323,9 @@
     }
 
     .action-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .action-btn.delete:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* Notes toggle */
     .notes-toggle {
-      display: flex;
-      align-items: center;
-      gap: 4px;
       padding: 4px 10px;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -394,83 +356,42 @@
 
     .notes-body.open { display: block; }
 
-    /* Inline edit form */
-    .edit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
+    .edit-form { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
     .edit-input {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1.5px solid var(--navy);
-      border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
+      width: 100%; padding: 8px 10px;
+      border: 1.5px solid var(--navy); border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      background: var(--bg); color: var(--text); outline: none;
+      -webkit-appearance: none;
     }
 
     .edit-field {
       padding: 8px 10px;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
-      width: 100%;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      background: var(--bg); color: var(--text); outline: none;
+      width: 100%; -webkit-appearance: none;
     }
 
     .edit-field:focus { border-color: var(--navy); }
-
-    .edit-actions {
-      display: flex;
-      gap: 6px;
-    }
+    .edit-actions { display: flex; gap: 6px; }
 
     .save-btn {
-      padding: 6px 16px;
-      background: var(--navy);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+      padding: 6px 16px; background: var(--navy); color: white; border: none;
+      border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
     }
 
     .save-btn:hover { background: var(--navy-dark); }
 
     .cancel-btn {
-      padding: 6px 14px;
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      cursor: pointer;
+      padding: 6px 14px; background: transparent; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
   </style>
 </head>
 <body>
@@ -480,70 +401,88 @@
     <div class="header-dot"></div>
   </div>
 
-  <div class="content">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('tasks', this)">Tasks</button>
+    <button class="tab-btn" onclick="switchTab('clients', this)">By Client</button>
+  </div>
 
-    <!-- Add Task Form -->
-    <div class="add-form">
-      <div class="form-title">New Task</div>
-      <div class="form-grid">
-        <div>
-          <input type="text" id="taskInput" placeholder="What needs to get done?" autocomplete="off" />
-        </div>
-        <div class="form-row">
-          <div style="flex:1;">
+  <!-- Tasks Tab -->
+  <div class="tab-panel active" id="tab-tasks">
+    <div class="content">
+      <div class="add-form">
+        <div class="form-title">New Task</div>
+        <div class="form-grid">
+          <div>
+            <input type="text" id="taskInput" placeholder="What needs to get done?" autocomplete="off" />
+          </div>
+          <div>
             <div class="field-label">Due Date</div>
-            <input type="date" id="dueDateInput" />
+            <input type="date" id="dueDateInput" style="max-width:200px;" />
           </div>
-          <div style="flex:1;">
-            <div class="field-label">Category</div>
-            <input type="text" id="categoryInput" placeholder="e.g. Reports" autocomplete="off" list="categoryList" />
-            <datalist id="categoryList"></datalist>
-          </div>
-        </div>
-        <div>
-          <div class="field-label">Recurrence</div>
-          <div class="recurrence-row">
-            <div style="flex:1;">
-              <select id="recurrenceType" onchange="handleRecurrenceChange()">
-                <option value="">None</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly_end">Monthly (end of month)</option>
-              </select>
+
+          <button class="more-options-btn" id="moreOptionsBtn" onclick="toggleAdvanced()">
+            <span class="more-options-arrow" id="moreOptionsArrow">▶</span>&nbsp;More options
+          </button>
+
+          <div class="advanced-fields" id="advancedFields">
+            <div>
+              <div class="field-label">Category</div>
+              <input type="text" id="categoryInput" placeholder="e.g. Reports" autocomplete="off" list="categoryList" />
+              <datalist id="categoryList"></datalist>
             </div>
-            <div id="recurrenceDayWrapper">
-              <div class="field-label">Day</div>
-              <select id="recurrenceDay">
-                <option value="0">Monday</option>
-                <option value="1">Tuesday</option>
-                <option value="2">Wednesday</option>
-                <option value="3">Thursday</option>
-                <option value="4">Friday</option>
-                <option value="5">Saturday</option>
-                <option value="6">Sunday</option>
-              </select>
+            <div>
+              <div class="field-label">Client</div>
+              <input type="text" id="clientInput" placeholder="e.g. Smith for Congress" autocomplete="off" list="clientList" />
+              <datalist id="clientList"></datalist>
+            </div>
+            <div>
+              <div class="field-label">Recurrence</div>
+              <div class="recurrence-row">
+                <div style="flex:1;">
+                  <select id="recurrenceType" onchange="handleRecurrenceChange()">
+                    <option value="">None</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly_end">Monthly (end of month)</option>
+                  </select>
+                </div>
+                <div id="recurrenceDayWrapper" style="flex:1;">
+                  <select id="recurrenceDay">
+                    <option value="0">Monday</option>
+                    <option value="1">Tuesday</option>
+                    <option value="2">Wednesday</option>
+                    <option value="3">Thursday</option>
+                    <option value="4">Friday</option>
+                    <option value="5">Saturday</option>
+                    <option value="6">Sunday</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Notes (optional)</div>
+              <textarea id="notesInput" placeholder="Any context or details..."></textarea>
             </div>
           </div>
+
+          <button class="btn-add" id="addBtn" onclick="addTask()">Add Task</button>
         </div>
-        <div>
-          <div class="field-label">Notes (optional)</div>
-          <textarea id="notesInput" placeholder="Any context or details..."></textarea>
-        </div>
-        <button class="btn-add" id="addBtn" onclick="addTask()">Add Task</button>
+        <div class="toast" id="toast"></div>
       </div>
-      <div class="toast" id="toast"></div>
-    </div>
 
-    <!-- Filter bar (populated dynamically) -->
-    <div class="filter-bar" id="filterBar" style="display:none;">
-      <span class="filter-label">Filter:</span>
-      <button class="filter-chip active" data-cat="" onclick="setFilter('', this)">All</button>
-    </div>
+      <div class="filter-bar" id="filterBar" style="display:none;">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-chip active" data-cat="" onclick="setFilter('', this)">All</button>
+      </div>
 
-    <!-- Task list groups -->
-    <div id="taskListContainer">
-      <div class="loading">Loading...</div>
+      <div id="taskListContainer"><div class="loading">Loading...</div></div>
     </div>
+  </div>
 
+  <!-- Clients Tab -->
+  <div class="tab-panel" id="tab-clients">
+    <div class="content">
+      <div id="clientListContainer"><div class="loading">Loading...</div></div>
+    </div>
   </div>
 
   <script>
@@ -552,24 +491,38 @@
 
     let allTasks = [];
     let activeFilter = '';
+    let activeTab = 'tasks';
 
-    // ─── Helpers ────────────────────────────────────────────────
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+      activeTab = tab;
+      if (tab === 'clients') renderClientView(allTasks);
+    }
+
+    function toggleAdvanced() {
+      const fields = document.getElementById('advancedFields');
+      const arrow = document.getElementById('moreOptionsArrow');
+      const isOpen = fields.classList.contains('open');
+      fields.classList.toggle('open', !isOpen);
+      arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+    }
 
     function getMountainDate() {
       return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
     }
 
     function getMountainDateObj() {
-      const str = getMountainDate();
-      const [y, m, d] = str.split('-').map(Number);
+      const [y, m, d] = getMountainDate().split('-').map(Number);
       return new Date(y, m - 1, d);
     }
 
     function getDueStatus(dateStr) {
       if (!dateStr) return null;
       const today = getMountainDate();
-      const todayObj = getMountainDateObj();
-      const sevenOut = new Date(todayObj);
+      const sevenOut = new Date(getMountainDateObj());
       sevenOut.setDate(sevenOut.getDate() + 7);
       const [y, m, d] = dateStr.split('-').map(Number);
       const taskDate = new Date(y, m - 1, d);
@@ -582,8 +535,7 @@
     function formatDate(dateStr) {
       if (!dateStr) return null;
       const [y, m, d] = dateStr.split('-').map(Number);
-      const dt = new Date(y, m - 1, d);
-      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
     function showToast(msg, isError = false) {
@@ -599,61 +551,41 @@
 
     function handleRecurrenceChange() {
       const type = document.getElementById('recurrenceType').value;
-      const dayWrapper = document.getElementById('recurrenceDayWrapper');
-      dayWrapper.style.display = type === 'weekly' ? 'block' : 'none';
+      document.getElementById('recurrenceDayWrapper').style.display = type === 'weekly' ? 'block' : 'none';
     }
 
-    // ─── Unhide recurring tasks whose month has arrived ─────────
-
     async function unhideTasksIfNeeded(tasks) {
-      const todayStr = getMountainDate();
-      const [ty, tm] = todayStr.split('-').map(Number);
+      const [ty, tm] = getMountainDate().split('-').map(Number);
       const toUnhide = tasks.filter(t => {
         if (!t.is_hidden || !t.due_date) return false;
         const [y, m] = t.due_date.split('-').map(Number);
         return y < ty || (y === ty && m <= tm);
       });
-
       for (const t of toUnhide) {
         try {
           await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${t.id}`, {
             method: 'PATCH',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=minimal'
-            },
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
             body: JSON.stringify({ is_hidden: false })
           });
-          console.log(`Unhid recurring task: ${t.task_name}`);
-        } catch (e) {
-          console.error('Failed to unhide task', t.id, e);
-        }
+          t.is_hidden = false;
+        } catch (e) { console.error('Failed to unhide task', t.id, e); }
       }
-
-      // Return updated list
-      toUnhide.forEach(t => { t.is_hidden = false; });
       return tasks;
     }
 
-    // ─── Category autocomplete ───────────────────────────────────
-
-    function refreshCategoryList(tasks) {
+    function refreshDataLists(tasks) {
       const cats = [...new Set(tasks.map(t => t.category).filter(Boolean))].sort();
-      const dl = document.getElementById('categoryList');
-      dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+      const clients = [...new Set(tasks.map(t => t.client).filter(Boolean))].sort();
+      document.getElementById('categoryList').innerHTML = cats.map(c => `<option value="${c}">`).join('');
+      document.getElementById('clientList').innerHTML = clients.map(c => `<option value="${c}">`).join('');
     }
 
     function updateFilterBar(tasks) {
       const cats = [...new Set(tasks.map(t => t.category).filter(Boolean))].sort();
       const bar = document.getElementById('filterBar');
-      if (cats.length === 0) {
-        bar.style.display = 'none';
-        return;
-      }
+      if (cats.length === 0) { bar.style.display = 'none'; return; }
       bar.style.display = 'flex';
-      // Remove old category chips, keep "All"
       bar.querySelectorAll('[data-cat]:not([data-cat=""])').forEach(el => el.remove());
       cats.forEach(cat => {
         const btn = document.createElement('button');
@@ -672,95 +604,61 @@
       renderTaskList(allTasks);
     }
 
-    // ─── Next recurrence date calculation ───────────────────────
-
     function getNextWeeklyDate(fromDateStr, recurrenceDay) {
-      // recurrenceDay: 0=Mon, 6=Sun (JS: 0=Sun, 1=Mon...)
       const [y, m, d] = fromDateStr.split('-').map(Number);
-      const base = new Date(y, m - 1, d);
-      // Map our 0=Mon to JS day: Mon=1, Tue=2, ..., Sun=0
       const jsDay = recurrenceDay === 6 ? 0 : recurrenceDay + 1;
-      let next = new Date(base);
-      next.setDate(next.getDate() + 1); // at least one day forward
-      while (next.getDay() !== jsDay) {
-        next.setDate(next.getDate() + 1);
-      }
+      let next = new Date(y, m - 1, d);
+      next.setDate(next.getDate() + 1);
+      while (next.getDay() !== jsDay) next.setDate(next.getDate() + 1);
       return next.toISOString().split('T')[0];
     }
 
     function getMonthlyEndDate(fromDateStr) {
-      // 3rd to last day of next month from fromDateStr's month
       const [y, m] = fromDateStr.split('-').map(Number);
-      let nextMonth = m + 1;
-      let nextYear = y;
-      if (nextMonth > 12) { nextMonth = 1; nextYear++; }
-      // Last day of nextMonth
-      const lastDay = new Date(nextYear, nextMonth, 0).getDate(); // day 0 of month+1 = last day of month
-      const targetDay = lastDay - 2; // 3rd to last
-      return `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(targetDay).padStart(2, '0')}`;
+      let nm = m + 1, ny = y;
+      if (nm > 12) { nm = 1; ny++; }
+      const lastDay = new Date(ny, nm, 0).getDate();
+      return `${ny}-${String(nm).padStart(2,'0')}-${String(lastDay - 2).padStart(2,'0')}`;
     }
-
-    // ─── Spawn next recurring instance ──────────────────────────
 
     async function spawnNextRecurrence(completedTask) {
       if (!completedTask.recurrence_type) return;
-
-      let nextDueDate;
-      let isHidden = false;
-
+      let nextDueDate, isHidden = false;
       if (completedTask.recurrence_type === 'weekly') {
         if (completedTask.recurrence_day === null || completedTask.recurrence_day === undefined) return;
-        const fromDate = completedTask.due_date || getMountainDate();
-        nextDueDate = getNextWeeklyDate(fromDate, completedTask.recurrence_day);
+        nextDueDate = getNextWeeklyDate(completedTask.due_date || getMountainDate(), completedTask.recurrence_day);
       } else if (completedTask.recurrence_type === 'monthly_end') {
-        const fromDate = completedTask.due_date || getMountainDate();
-        nextDueDate = getMonthlyEndDate(fromDate);
-        // Hide if next month hasn't started yet
-        const todayStr = getMountainDate();
-        const [ty, tm] = todayStr.split('-').map(Number);
+        nextDueDate = getMonthlyEndDate(completedTask.due_date || getMountainDate());
+        const [ty, tm] = getMountainDate().split('-').map(Number);
         const [ny, nm] = nextDueDate.split('-').map(Number);
-        if (ny > ty || nm > tm) {
-          isHidden = true;
-        }
+        if (ny > ty || nm > tm) isHidden = true;
       }
-
       if (!nextDueDate) return;
-
-      const payload = {
-        task_name: completedTask.task_name,
-        due_date: nextDueDate,
-        status: 'open',
-        category: completedTask.category || null,
-        notes: completedTask.notes || null,
-        recurrence_type: completedTask.recurrence_type,
-        recurrence_day: completedTask.recurrence_day ?? null,
-        parent_task_id: completedTask.parent_task_id || completedTask.id,
-        is_hidden: isHidden
-      };
-
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
           method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(payload)
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({
+            task_name: completedTask.task_name,
+            due_date: nextDueDate,
+            status: 'open',
+            category: completedTask.category || null,
+            client: completedTask.client || null,
+            notes: completedTask.notes || null,
+            recurrence_type: completedTask.recurrence_type,
+            recurrence_day: completedTask.recurrence_day ?? null,
+            parent_task_id: completedTask.parent_task_id || completedTask.id,
+            is_hidden: isHidden
+          })
         });
         if (!res.ok) throw new Error('Failed to spawn next recurrence');
-        console.log(`Spawned next ${completedTask.recurrence_type} task: ${nextDueDate}${isHidden ? ' (hidden)' : ''}`);
       } catch (e) {
         console.error('Failed to spawn next recurrence', e);
         showToast('Warning: could not create next recurring instance.', true);
       }
     }
 
-    // ─── Load tasks ──────────────────────────────────────────────
-
     async function loadTasks() {
-      const container = document.getElementById('taskListContainer');
       try {
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/tasks?status=eq.open&order=due_date.asc.nullslast,created_at.asc`,
@@ -768,35 +666,29 @@
         );
         if (!res.ok) throw new Error('Failed to fetch');
         let tasks = await res.json();
-
-        // Unhide any that should now be visible
         tasks = await unhideTasksIfNeeded(tasks);
-
-        // Filter out still-hidden tasks
         allTasks = tasks.filter(t => !t.is_hidden);
-
-        refreshCategoryList(allTasks);
+        refreshDataLists(allTasks);
         updateFilterBar(allTasks);
         updateTitle(allTasks.length);
         renderTaskList(allTasks);
+        if (activeTab === 'clients') renderClientView(allTasks);
       } catch (e) {
-        container.innerHTML = `<div class="empty-state">Failed to load tasks. Check connection.</div>`;
+        document.getElementById('taskListContainer').innerHTML = `<div class="empty-state">Failed to load tasks. Check connection.</div>`;
         console.error(e);
       }
     }
-
-    // ─── Render task list ────────────────────────────────────────
 
     function renderTaskList(tasks) {
       const container = document.getElementById('taskListContainer');
       const filtered = activeFilter ? tasks.filter(t => t.category === activeFilter) : tasks;
 
       const groups = {
-        overdue:   { label: 'Overdue',        emoji: '⚠',  cls: 'overdue',   tasks: [], defaultCollapsed: false },
-        today:     { label: 'Due Today',       emoji: '★',  cls: 'this-week', tasks: [], defaultCollapsed: false },
-        this_week: { label: 'Due This Week',   emoji: '◆',  cls: 'this-week', tasks: [], defaultCollapsed: false },
-        later:     { label: 'Coming Up',       emoji: '○',  cls: 'later',     tasks: [], defaultCollapsed: true  },
-        no_date:   { label: 'No Due Date',     emoji: '·',  cls: 'no-date',   tasks: [], defaultCollapsed: false }
+        overdue:   { label: 'Overdue',      cls: 'overdue',   tasks: [], defaultCollapsed: false },
+        today:     { label: 'Due Today',     cls: 'this-week', tasks: [], defaultCollapsed: false },
+        this_week: { label: 'Due This Week', cls: 'this-week', tasks: [], defaultCollapsed: false },
+        later:     { label: 'Coming Up',     cls: 'later',     tasks: [], defaultCollapsed: true  },
+        no_date:   { label: 'No Due Date',   cls: 'no-date',   tasks: [], defaultCollapsed: false }
       };
 
       filtered.forEach(t => {
@@ -816,15 +708,13 @@
       container.innerHTML = '';
       Object.entries(groups).forEach(([key, group]) => {
         if (group.tasks.length === 0) return;
-        const groupEl = buildGroupElement(key, group);
-        container.appendChild(groupEl);
+        container.appendChild(buildGroupElement(key, group));
       });
     }
 
     function buildGroupElement(key, group) {
       const wrapper = document.createElement('div');
       wrapper.className = 'task-group';
-
       const header = document.createElement('div');
       header.className = `group-header ${group.cls}`;
       header.innerHTML = `
@@ -834,20 +724,85 @@
         </div>
         <span class="group-chevron ${group.defaultCollapsed ? 'collapsed' : ''}" id="chevron-${key}">▾</span>
       `;
-
       const body = document.createElement('div');
       body.className = `group-body ${group.defaultCollapsed ? 'collapsed' : ''}`;
       body.id = `group-body-${key}`;
-
       group.tasks.forEach(t => body.appendChild(buildTaskCard(t)));
-
       header.onclick = () => {
-        const isCollapsed = body.classList.contains('collapsed');
-        body.classList.toggle('collapsed', !isCollapsed);
-        const chevron = document.getElementById(`chevron-${key}`);
-        if (chevron) chevron.classList.toggle('collapsed', !isCollapsed);
+        const collapsed = body.classList.contains('collapsed');
+        body.classList.toggle('collapsed', !collapsed);
+        document.getElementById(`chevron-${key}`)?.classList.toggle('collapsed', !collapsed);
+      };
+      wrapper.appendChild(header);
+      wrapper.appendChild(body);
+      return wrapper;
+    }
+
+    function renderClientView(tasks) {
+      const container = document.getElementById('clientListContainer');
+      if (tasks.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div style="font-size:32px;margin-bottom:10px;">✓</div>No open tasks</div>`;
+        return;
+      }
+      const clientMap = {};
+      tasks.forEach(t => {
+        const key = t.client || '__unassigned__';
+        if (!clientMap[key]) clientMap[key] = [];
+        clientMap[key].push(t);
+      });
+      const sortedKeys = Object.keys(clientMap).sort((a, b) => {
+        if (a === '__unassigned__') return 1;
+        if (b === '__unassigned__') return -1;
+        return a.localeCompare(b);
+      });
+      container.innerHTML = '';
+      sortedKeys.forEach(key => {
+        container.appendChild(buildClientSection(key, key === '__unassigned__' ? 'Unassigned' : key, clientMap[key]));
+      });
+    }
+
+    function buildClientSection(clientKey, clientName, tasks) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'client-section';
+      const header = document.createElement('div');
+      header.className = 'client-section-header';
+      header.innerHTML = `
+        <span class="client-section-title">${clientName}</span>
+        <span class="client-section-count">${tasks.length} task${tasks.length !== 1 ? 's' : ''}</span>
+      `;
+      const body = document.createElement('div');
+      body.className = 'client-section-body';
+
+      const subgroups = {
+        overdue:   { label: 'Overdue',    cls: 'overdue',   tasks: [] },
+        today:     { label: 'Due Today',  cls: 'this-week', tasks: [] },
+        this_week: { label: 'This Week',  cls: 'this-week', tasks: [] },
+        later:     { label: 'Coming Up',  cls: 'later',     tasks: [] },
+        no_date:   { label: 'No Due Date',cls: 'no-date',   tasks: [] }
       };
 
+      tasks.forEach(t => {
+        const s = getDueStatus(t.due_date);
+        if (s === 'overdue') subgroups.overdue.tasks.push(t);
+        else if (s === 'today') subgroups.today.tasks.push(t);
+        else if (s === 'this_week') subgroups.this_week.tasks.push(t);
+        else if (s === 'later') subgroups.later.tasks.push(t);
+        else subgroups.no_date.tasks.push(t);
+      });
+
+      Object.entries(subgroups).forEach(([, group]) => {
+        if (group.tasks.length === 0) return;
+        const subHeader = document.createElement('div');
+        subHeader.className = `client-subgroup-header ${group.cls}`;
+        subHeader.textContent = group.label;
+        body.appendChild(subHeader);
+        const subTasks = document.createElement('div');
+        subTasks.className = 'client-subgroup-tasks';
+        group.tasks.forEach(t => subTasks.appendChild(buildTaskCard(t)));
+        body.appendChild(subTasks);
+      });
+
+      header.onclick = () => body.classList.toggle('collapsed');
       wrapper.appendChild(header);
       wrapper.appendChild(body);
       return wrapper;
@@ -856,27 +811,20 @@
     function buildTaskCard(task) {
       const status = getDueStatus(task.due_date);
       const card = document.createElement('div');
-      card.className = 'task-card' +
-        (status === 'overdue' ? ' overdue' : '') +
-        (status === 'today' ? ' due-today' : '');
+      card.className = 'task-card' + (status === 'overdue' ? ' overdue' : '') + (status === 'today' ? ' due-today' : '');
       card.id = `task-${task.id}`;
 
-      // Due label
       let dueHtml = '';
       if (task.due_date) {
         const cls = status === 'overdue' ? 'overdue' : status === 'today' ? 'today' : '';
         const label = status === 'overdue' ? `Overdue · ${formatDate(task.due_date)}` :
-                      status === 'today'   ? 'Due Today' :
-                      `Due ${formatDate(task.due_date)}`;
+                      status === 'today'   ? 'Due Today' : `Due ${formatDate(task.due_date)}`;
         dueHtml = `<span class="due-label ${cls}">${label}</span>`;
       }
 
-      // Category
-      const catHtml = task.category
-        ? `<span class="category-tag">${task.category}</span>`
-        : '';
+      const catHtml = task.category ? `<span class="category-tag">${task.category}</span>` : '';
+      const clientHtml = task.client ? `<span class="client-tag">${task.client}</span>` : '';
 
-      // Recurrence
       const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
       let recurHtml = '';
       if (task.recurrence_type === 'weekly' && task.recurrence_day !== null && task.recurrence_day !== undefined) {
@@ -885,39 +833,27 @@
         recurHtml = `<span class="recur-label">↻ Monthly</span>`;
       }
 
-      // Notes button
       const hasNotes = task.notes && task.notes.trim().length > 0;
-      const notesBtn = hasNotes
-        ? `<button class="notes-toggle has-notes" id="notes-btn-${task.id}" onclick="toggleNotes('${task.id}')">📝 Notes</button>`
-        : '';
-
-      // Snooze (only if has due date)
-      const snoozeBtn = task.due_date
-        ? `<button class="action-btn" onclick="snoozeTask('${task.id}', '${task.due_date}')">Snooze 1 day</button>`
-        : '';
-
-      const escapedName = task.task_name.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/'/g, "\\'");
+      const notesBtn = hasNotes ? `<button class="notes-toggle has-notes" id="notes-btn-${task.id}" onclick="toggleNotes('${task.id}')">📝 Notes</button>` : '';
+      const snoozeBtn = task.due_date ? `<button class="action-btn" onclick="snoozeTask('${task.id}', '${task.due_date}')">Snooze 1 day</button>` : '';
+      const safeName = task.task_name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
       card.innerHTML = `
         <div class="task-top">
           <button class="complete-btn" onclick="completeTask('${task.id}')" title="Mark complete"></button>
           <div class="task-main">
             <div class="task-name">${task.task_name}</div>
-            <div class="task-meta">
-              ${dueHtml}
-              ${catHtml}
-              ${recurHtml}
-            </div>
+            <div class="task-meta">${dueHtml}${catHtml}${clientHtml}${recurHtml}</div>
             <div class="task-actions">
               ${snoozeBtn}
               <button class="action-btn" onclick="editTask('${task.id}')">Edit</button>
+              <button class="action-btn delete" onclick="deleteTask('${task.id}', '${safeName}')">Delete</button>
               ${notesBtn}
             </div>
             ${hasNotes ? `<div class="notes-body" id="notes-body-${task.id}">${task.notes}</div>` : ''}
           </div>
         </div>
       `;
-
       return card;
     }
 
@@ -930,12 +866,11 @@
       if (btn) btn.textContent = isOpen ? '📝 Notes' : '📝 Hide notes';
     }
 
-    // ─── Add task ────────────────────────────────────────────────
-
     async function addTask() {
       const nameInput = document.getElementById('taskInput');
       const dateInput = document.getElementById('dueDateInput');
       const catInput = document.getElementById('categoryInput');
+      const clientInput = document.getElementById('clientInput');
       const notesInput = document.getElementById('notesInput');
       const recType = document.getElementById('recurrenceType').value;
       const recDay = document.getElementById('recurrenceDay').value;
@@ -944,62 +879,41 @@
       const name = nameInput.value.trim();
       if (!name) { showToast('Please enter a task name.', true); nameInput.focus(); return; }
 
-      // If weekly recurrence but no due date, compute the first occurrence
       let dueDate = dateInput.value || null;
       if (recType === 'weekly' && !dueDate) {
-        // Calculate next occurrence of the selected day from today
-        const today = getMountainDate();
-        dueDate = getNextWeeklyDate(
-          // Subtract one day so getNextWeeklyDate's "+1 day" logic starts from today
-          (() => {
-            const [y,m,d] = today.split('-').map(Number);
-            const dt = new Date(y, m-1, d);
-            dt.setDate(dt.getDate() - 1);
-            return dt.toISOString().split('T')[0];
-          })(),
-          parseInt(recDay)
-        );
+        const [y, m, d] = getMountainDate().split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        dt.setDate(dt.getDate() - 1);
+        dueDate = getNextWeeklyDate(dt.toISOString().split('T')[0], parseInt(recDay));
       }
       if (recType === 'monthly_end' && !dueDate) {
-        // Use this month's 3rd-to-last day
-        const today = getMountainDate();
-        const [y, m] = today.split('-').map(Number);
+        const [y, m] = getMountainDate().split('-').map(Number);
         const lastDay = new Date(y, m, 0).getDate();
-        const targetDay = lastDay - 2;
-        dueDate = `${y}-${String(m).padStart(2,'0')}-${String(targetDay).padStart(2,'0')}`;
+        dueDate = `${y}-${String(m).padStart(2,'0')}-${String(lastDay - 2).padStart(2,'0')}`;
       }
 
       btn.disabled = true;
       btn.textContent = 'Adding...';
 
-      const payload = {
-        task_name: name,
-        due_date: dueDate,
-        status: 'open',
-        category: catInput.value.trim() || null,
-        notes: notesInput.value.trim() || null,
-        recurrence_type: recType || null,
-        recurrence_day: recType === 'weekly' ? parseInt(recDay) : null,
-        is_hidden: false
-      };
-
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
           method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(payload)
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({
+            task_name: name,
+            due_date: dueDate,
+            status: 'open',
+            category: catInput.value.trim() || null,
+            client: clientInput.value.trim() || null,
+            notes: notesInput.value.trim() || null,
+            recurrence_type: recType || null,
+            recurrence_day: recType === 'weekly' ? parseInt(recDay) : null,
+            is_hidden: false
+          })
         });
         if (!res.ok) throw new Error('Failed to add task');
-
-        nameInput.value = '';
-        dateInput.value = '';
-        catInput.value = '';
-        notesInput.value = '';
+        nameInput.value = ''; dateInput.value = ''; catInput.value = '';
+        clientInput.value = ''; notesInput.value = '';
         document.getElementById('recurrenceType').value = '';
         document.getElementById('recurrenceDayWrapper').style.display = 'none';
         showToast('Task added.');
@@ -1013,62 +927,54 @@
       }
     }
 
-    // ─── Complete task ───────────────────────────────────────────
-
     async function completeTask(id) {
       const card = document.getElementById(`task-${id}`);
-      if (!card) return;
-      card.style.opacity = '0.4';
-      card.style.pointerEvents = 'none';
-
+      if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
       const task = allTasks.find(t => t.id === id);
-
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}`, {
           method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
           body: JSON.stringify({ status: 'complete' })
         });
-        if (!res.ok) throw new Error('Failed to complete task');
-
-        // Spawn next recurrence if applicable
-        if (task && task.recurrence_type) {
-          await spawnNextRecurrence(task);
-        }
-
+        if (!res.ok) throw new Error('Failed to complete');
+        if (task && task.recurrence_type) await spawnNextRecurrence(task);
         await loadTasks();
       } catch (e) {
-        card.style.opacity = '1';
-        card.style.pointerEvents = 'auto';
+        if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }
         showToast('Failed to mark complete. Try again.', true);
         console.error(e);
       }
     }
 
-    // ─── Snooze task ─────────────────────────────────────────────
+    async function deleteTask(id, name) {
+      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+      const card = document.getElementById(`task-${id}`);
+      if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (!res.ok) throw new Error('Failed to delete');
+        await loadTasks();
+      } catch (e) {
+        if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }
+        showToast('Failed to delete. Try again.', true);
+        console.error(e);
+      }
+    }
 
     async function snoozeTask(id, currentDueDate) {
       const card = document.getElementById(`task-${id}`);
       if (card) card.style.opacity = '0.4';
-
       const d = new Date(currentDueDate + 'T00:00:00');
       d.setDate(d.getDate() + 1);
       const newDate = d.toISOString().split('T')[0];
-
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}`, {
           method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
           body: JSON.stringify({ due_date: newDate })
         });
         if (!res.ok) throw new Error('Failed to snooze');
@@ -1081,8 +987,6 @@
       }
     }
 
-    // ─── Edit task ───────────────────────────────────────────────
-
     function editTask(id) {
       const task = allTasks.find(t => t.id === id);
       const card = document.getElementById(`task-${id}`);
@@ -1090,30 +994,18 @@
       card.dataset.originalHtml = card.innerHTML;
 
       const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-      const dayOptions = days.map((d,i) =>
-        `<option value="${i}" ${task.recurrence_day === i ? 'selected' : ''}>${d}</option>`
-      ).join('');
-
-      const escapedName = (task.task_name || '').replace(/"/g, '&quot;');
-      const escapedCat = (task.category || '').replace(/"/g, '&quot;');
-      const escapedNotes = (task.notes || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const dayOptions = days.map((d, i) => `<option value="${i}" ${task.recurrence_day === i ? 'selected' : ''}>${d}</option>`).join('');
+      const eName = (task.task_name || '').replace(/"/g, '&quot;');
+      const eCat = (task.category || '').replace(/"/g, '&quot;');
+      const eClient = (task.client || '').replace(/"/g, '&quot;');
+      const eNotes = (task.notes || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
       card.innerHTML = `
         <div class="edit-form">
-          <div>
-            <div class="field-label">Task</div>
-            <input class="edit-input" id="edit-name-${id}" type="text" value="${escapedName}" />
-          </div>
-          <div class="form-row">
-            <div style="flex:1;">
-              <div class="field-label">Due Date</div>
-              <input class="edit-field" id="edit-due-${id}" type="date" value="${task.due_date || ''}" />
-            </div>
-            <div style="flex:1;">
-              <div class="field-label">Category</div>
-              <input class="edit-field" id="edit-cat-${id}" type="text" value="${escapedCat}" list="categoryList" />
-            </div>
-          </div>
+          <div><div class="field-label">Task</div><input class="edit-input" id="edit-name-${id}" type="text" value="${eName}" /></div>
+          <div><div class="field-label">Due Date</div><input class="edit-field" id="edit-due-${id}" type="date" value="${task.due_date || ''}" style="max-width:200px;" /></div>
+          <div><div class="field-label">Category</div><input class="edit-field" id="edit-cat-${id}" type="text" value="${eCat}" list="categoryList" /></div>
+          <div><div class="field-label">Client</div><input class="edit-field" id="edit-client-${id}" type="text" value="${eClient}" list="clientList" /></div>
           <div>
             <div class="field-label">Recurrence</div>
             <div class="recurrence-row">
@@ -1129,10 +1021,7 @@
               </div>
             </div>
           </div>
-          <div>
-            <div class="field-label">Notes</div>
-            <textarea class="edit-field" id="edit-notes-${id}" style="min-height:64px;resize:vertical;">${escapedNotes}</textarea>
-          </div>
+          <div><div class="field-label">Notes</div><textarea class="edit-field" id="edit-notes-${id}" style="min-height:64px;resize:vertical;">${eNotes}</textarea></div>
           <div class="edit-actions">
             <button class="save-btn" onclick="saveEdit('${id}')">Save</button>
             <button class="cancel-btn" onclick="cancelEdit('${id}')">Cancel</button>
@@ -1150,43 +1039,31 @@
 
     function cancelEdit(id) {
       const card = document.getElementById(`task-${id}`);
-      if (!card) return;
-      card.innerHTML = card.dataset.originalHtml;
+      if (card) card.innerHTML = card.dataset.originalHtml;
     }
 
     async function saveEdit(id) {
       const nameEl = document.getElementById(`edit-name-${id}`);
-      const dueEl = document.getElementById(`edit-due-${id}`);
-      const catEl = document.getElementById(`edit-cat-${id}`);
-      const notesEl = document.getElementById(`edit-notes-${id}`);
-      const rectypeEl = document.getElementById(`edit-rectype-${id}`);
-      const recdayEl = document.getElementById(`edit-recday-${id}`);
-
       const newName = nameEl.value.trim();
       if (!newName) { nameEl.style.borderColor = 'var(--danger)'; nameEl.focus(); return; }
 
-      const recType = rectypeEl.value || null;
+      const recType = document.getElementById(`edit-rectype-${id}`).value || null;
+      const recdayEl = document.getElementById(`edit-recday-${id}`);
       const recDay = recType === 'weekly' && recdayEl ? parseInt(recdayEl.value) : null;
-
-      const payload = {
-        task_name: newName,
-        due_date: dueEl.value || null,
-        category: catEl.value.trim() || null,
-        notes: notesEl.value.trim() || null,
-        recurrence_type: recType,
-        recurrence_day: recDay
-      };
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks?id=eq.${id}`, {
           method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(payload)
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({
+            task_name: newName,
+            due_date: document.getElementById(`edit-due-${id}`).value || null,
+            category: document.getElementById(`edit-cat-${id}`).value.trim() || null,
+            client: document.getElementById(`edit-client-${id}`).value.trim() || null,
+            notes: document.getElementById(`edit-notes-${id}`).value.trim() || null,
+            recurrence_type: recType,
+            recurrence_day: recDay
+          })
         });
         if (!res.ok) throw new Error('Failed to save');
         showToast('Task updated.');
@@ -1197,13 +1074,9 @@
       }
     }
 
-    // ─── Enter key on task input ─────────────────────────────────
-
     document.getElementById('taskInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') addTask();
     });
-
-    // ─── Init ────────────────────────────────────────────────────
 
     loadTasks();
   </script>
