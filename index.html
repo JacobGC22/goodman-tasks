@@ -18,7 +18,6 @@
       --muted: #7A8099;
       --border: #D6DCF0;
       --danger: #C0392B;
-      --danger-light: #FDF0EF;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,12 +60,11 @@
     }
 
     .tab-btn.active { color: white; border-bottom-color: var(--gold); }
-
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-
     .content { padding: 20px 16px; max-width: 680px; margin: 0 auto; }
 
+    /* Add form */
     .add-form {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -82,7 +80,6 @@
 
     input[type="text"],
     input[type="date"],
-    input[type="number"],
     select,
     textarea {
       width: 100%;
@@ -100,7 +97,7 @@
     }
 
     input:focus, select:focus, textarea:focus { border-color: var(--navy); }
-    input[type="date"] { color: var(--muted); }
+    input[type="date"] { color: var(--muted); max-width: 200px; }
     input[type="date"]:valid { color: var(--text); }
 
     select {
@@ -112,6 +109,42 @@
 
     textarea { resize: vertical; min-height: 72px; font-size: 13px; line-height: 1.5; }
 
+    /* Custom autocomplete */
+    .autocomplete-wrapper { position: relative; }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1.5px solid var(--navy);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(27,58,140,0.12);
+      z-index: 200;
+      max-height: 180px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .autocomplete-dropdown.open { display: block; }
+
+    .autocomplete-option {
+      padding: 10px 13px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.1s;
+    }
+
+    .autocomplete-option:hover,
+    .autocomplete-option.highlighted { background: var(--navy-light); color: var(--navy); }
+
+    .autocomplete-option:first-child { border-radius: 6px 6px 0 0; }
+    .autocomplete-option:last-child { border-radius: 0 0 6px 6px; }
+    .autocomplete-option:only-child { border-radius: 6px; }
+
+    /* More options */
     .more-options-btn {
       display: flex;
       align-items: center;
@@ -175,6 +208,7 @@
     .toast.error { background: var(--danger); }
     .toast.show { display: block; }
 
+    /* Filter bar */
     .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
     .filter-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -193,24 +227,31 @@
 
     .filter-chip:hover { border-color: var(--navy); color: var(--navy); }
     .filter-chip.active { background: var(--navy); border-color: var(--navy); color: white; }
+    .filter-chip.recurring-chip.active { background: #3A5FAF; border-color: #3A5FAF; }
 
-    .task-group { margin-bottom: 24px; }
+    /* Task groups */
+    .task-group { margin-bottom: 20px; }
 
     .group-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 8px 14px;
-      background: var(--navy);
       border-radius: 8px;
       margin-bottom: 10px;
       cursor: pointer;
       user-select: none;
+      background: var(--navy);
     }
 
     .group-header.overdue { background: var(--danger); }
-    .group-header.later { background: #3A5FAF; }
+    .group-header.today { background: #1D6E3A; }
+    .group-header.tomorrow { background: #2E5FA8; }
+    .group-header.this-week { background: #3A5FAF; }
+    .group-header.next-week { background: #4A6FBF; }
+    .group-header.later { background: #5B7ABF; }
     .group-header.no-date { background: #6B7A9E; }
+
     .group-header-left { display: flex; align-items: center; gap: 8px; }
     .group-title { font-size: 11px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px; }
     .group-count { font-size: 11px; color: rgba(255,255,255,0.7); }
@@ -255,7 +296,10 @@
     }
 
     .client-subgroup-header.overdue { background: var(--danger); }
+    .client-subgroup-header.today { background: #1D6E3A; }
+    .client-subgroup-header.tomorrow { background: #2E5FA8; }
     .client-subgroup-header.this-week { background: #3A5FAF; }
+    .client-subgroup-header.next-week { background: #4A6FBF; }
     .client-subgroup-header.later { background: #5B7ABF; }
     .client-subgroup-header.no-date { background: #8A94B0; }
 
@@ -272,6 +316,7 @@
 
     .task-card.overdue { border-left: 3px solid var(--danger); }
     .task-card.due-today { border-left: 3px solid var(--gold); }
+    .task-card.due-tomorrow { border-left: 3px solid #5B8FFF; }
 
     .task-top { display: flex; align-items: flex-start; gap: 12px; }
 
@@ -287,26 +332,43 @@
     }
 
     .complete-btn:hover { border-color: var(--navy); }
+
     .task-main { flex: 1; min-width: 0; }
     .task-name { font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--text); word-break: break-word; }
     .task-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+
     .due-label { font-size: 12px; color: var(--muted); }
     .due-label.overdue { color: var(--danger); font-weight: 500; }
-    .due-label.today { color: #8A6A00; font-weight: 500; }
+    .due-label.today { color: #1D6E3A; font-weight: 500; }
+    .due-label.tomorrow { color: #2E5FA8; font-weight: 500; }
 
     .category-tag {
-      display: inline-block; padding: 2px 8px;
-      background: var(--navy-light); border-radius: 4px;
-      font-size: 11px; font-weight: 600; color: var(--navy);
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--navy-light);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy);
     }
 
+    /* Client tag: same navy family but pill shape with left border accent */
     .client-tag {
-      display: inline-block; padding: 2px 8px;
-      background: var(--gold-light); border: 1px solid #F5D080;
-      border-radius: 4px; font-size: 11px; font-weight: 600; color: #7A5500;
+      display: inline-block;
+      padding: 2px 8px 2px 10px;
+      background: var(--gold-light);
+      border: 1px solid #E8C96A;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B4A00;
     }
 
-    .recur-label { font-size: 11px; color: var(--muted); }
+    .recur-label {
+      font-size: 11px;
+      color: var(--navy);
+      font-weight: 500;
+    }
 
     .task-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 
@@ -356,6 +418,7 @@
 
     .notes-body.open { display: block; }
 
+    /* Edit form */
     .edit-form { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
     .edit-input {
@@ -417,7 +480,7 @@
           </div>
           <div>
             <div class="field-label">Due Date</div>
-            <input type="date" id="dueDateInput" style="max-width:200px;" />
+            <input type="date" id="dueDateInput" />
           </div>
 
           <button class="more-options-btn" id="moreOptionsBtn" onclick="toggleAdvanced()">
@@ -427,13 +490,25 @@
           <div class="advanced-fields" id="advancedFields">
             <div>
               <div class="field-label">Category</div>
-              <input type="text" id="categoryInput" placeholder="e.g. Reports" autocomplete="off" list="categoryList" />
-              <datalist id="categoryList"></datalist>
+              <div class="autocomplete-wrapper">
+                <input type="text" id="categoryInput" placeholder="e.g. Reports" autocomplete="off"
+                  oninput="filterAutocomplete('categoryInput', 'categoryDropdown', allCategories)"
+                  onfocus="filterAutocomplete('categoryInput', 'categoryDropdown', allCategories)"
+                  onblur="closeDropdownDelayed('categoryDropdown')"
+                  onkeydown="handleAutocompleteKey(event, 'categoryDropdown', 'categoryInput')" />
+                <div class="autocomplete-dropdown" id="categoryDropdown"></div>
+              </div>
             </div>
             <div>
               <div class="field-label">Client</div>
-              <input type="text" id="clientInput" placeholder="e.g. Smith for Congress" autocomplete="off" list="clientList" />
-              <datalist id="clientList"></datalist>
+              <div class="autocomplete-wrapper">
+                <input type="text" id="clientInput" placeholder="e.g. Smith for Congress" autocomplete="off"
+                  oninput="filterAutocomplete('clientInput', 'clientDropdown', allClients)"
+                  onfocus="filterAutocomplete('clientInput', 'clientDropdown', allClients)"
+                  onblur="closeDropdownDelayed('clientDropdown')"
+                  onkeydown="handleAutocompleteKey(event, 'clientDropdown', 'clientInput')" />
+                <div class="autocomplete-dropdown" id="clientDropdown"></div>
+              </div>
             </div>
             <div>
               <div class="field-label">Recurrence</div>
@@ -442,7 +517,7 @@
                   <select id="recurrenceType" onchange="handleRecurrenceChange()">
                     <option value="">None</option>
                     <option value="weekly">Weekly</option>
-                    <option value="monthly_end">Monthly (end of month)</option>
+                    <option value="monthly_end">Monthly</option>
                   </select>
                 </div>
                 <div id="recurrenceDayWrapper" style="flex:1;">
@@ -471,7 +546,7 @@
 
       <div class="filter-bar" id="filterBar" style="display:none;">
         <span class="filter-label">Filter:</span>
-        <button class="filter-chip active" data-cat="" onclick="setFilter('', this)">All</button>
+        <button class="filter-chip active" data-filter="" onclick="setFilter('', this)">All</button>
       </div>
 
       <div id="taskListContainer"><div class="loading">Loading...</div></div>
@@ -490,8 +565,12 @@
     const SUPABASE_KEY = 'sb_publishable_Cm52EN6Ro7s_97xoMgW-UA_Yzy1r-oY';
 
     let allTasks = [];
-    let activeFilter = '';
+    let allCategories = [];
+    let allClients = [];
+    let activeFilter = '';   // '' = All, 'recurring' = recurring, otherwise category string
     let activeTab = 'tasks';
+
+    // ─── Tab switching ───────────────────────────────────────────
 
     function switchTab(tab, btn) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -502,6 +581,8 @@
       if (tab === 'clients') renderClientView(allTasks);
     }
 
+    // ─── Advanced fields toggle ──────────────────────────────────
+
     function toggleAdvanced() {
       const fields = document.getElementById('advancedFields');
       const arrow = document.getElementById('moreOptionsArrow');
@@ -510,8 +591,76 @@
       arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
     }
 
+    // ─── Custom autocomplete ─────────────────────────────────────
+
+    function filterAutocomplete(inputId, dropdownId, options) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+      const val = input.value.trim().toLowerCase();
+      const filtered = val
+        ? options.filter(o => o.toLowerCase().includes(val))
+        : options;
+
+      if (filtered.length === 0) {
+        dropdown.classList.remove('open');
+        dropdown.innerHTML = '';
+        return;
+      }
+
+      dropdown.innerHTML = filtered.map(o =>
+        `<div class="autocomplete-option" onmousedown="selectAutocomplete('${inputId}', '${dropdownId}', '${o.replace(/'/g, "\\'")}')">${o}</div>`
+      ).join('');
+      dropdown.classList.add('open');
+    }
+
+    function selectAutocomplete(inputId, dropdownId, value) {
+      document.getElementById(inputId).value = value;
+      document.getElementById(dropdownId).classList.remove('open');
+      // Re-run filter for edit forms that use different IDs
+      const inputEl = document.getElementById(inputId);
+      if (inputEl) inputEl.dispatchEvent(new Event('input'));
+    }
+
+    function closeDropdownDelayed(dropdownId) {
+      setTimeout(() => {
+        const d = document.getElementById(dropdownId);
+        if (d) d.classList.remove('open');
+      }, 150);
+    }
+
+    function handleAutocompleteKey(event, dropdownId, inputId) {
+      const dropdown = document.getElementById(dropdownId);
+      const options = dropdown.querySelectorAll('.autocomplete-option');
+      const highlighted = dropdown.querySelector('.highlighted');
+      let idx = Array.from(options).indexOf(highlighted);
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (highlighted) highlighted.classList.remove('highlighted');
+        idx = (idx + 1) % options.length;
+        options[idx]?.classList.add('highlighted');
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (highlighted) highlighted.classList.remove('highlighted');
+        idx = (idx - 1 + options.length) % options.length;
+        options[idx]?.classList.add('highlighted');
+      } else if (event.key === 'Enter' && highlighted) {
+        event.preventDefault();
+        selectAutocomplete(inputId, dropdownId, highlighted.textContent);
+      } else if (event.key === 'Escape') {
+        dropdown.classList.remove('open');
+      }
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────
+
     function getMountainDate() {
       return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+    }
+
+    function getMountainDayOfWeek() {
+      // 0=Sun, 1=Mon, ..., 6=Sat
+      return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' })).getDay();
     }
 
     function getMountainDateObj() {
@@ -519,17 +668,55 @@
       return new Date(y, m - 1, d);
     }
 
+    function addDays(dateObj, n) {
+      const d = new Date(dateObj);
+      d.setDate(d.getDate() + n);
+      return d;
+    }
+
+    function dateObjToStr(d) {
+      return d.toLocaleDateString('en-CA');
+    }
+
     function getDueStatus(dateStr) {
       if (!dateStr) return null;
       const today = getMountainDate();
-      const sevenOut = new Date(getMountainDateObj());
-      sevenOut.setDate(sevenOut.getDate() + 7);
-      const [y, m, d] = dateStr.split('-').map(Number);
-      const taskDate = new Date(y, m - 1, d);
+      const todayObj = getMountainDateObj();
+      const dow = getMountainDayOfWeek(); // 0=Sun ... 6=Sat
+
+      const tomorrowStr = dateObjToStr(addDays(todayObj, 1));
+
+      // End of current week = this Saturday
+      const daysToSat = (6 - dow + 7) % 7; // days until Saturday
+      const saturdayObj = addDays(todayObj, daysToSat);
+      const saturdayStr = dateObjToStr(saturdayObj);
+
+      // Next week = Sunday through Saturday after this Saturday
+      const nextSundayObj = addDays(saturdayObj, 1);
+      const nextSaturdayObj = addDays(nextSundayObj, 6);
+      const nextSundayStr = dateObjToStr(nextSundayObj);
+      const nextSaturdayStr = dateObjToStr(nextSaturdayObj);
+
       if (dateStr < today) return 'overdue';
       if (dateStr === today) return 'today';
-      if (taskDate <= sevenOut) return 'this_week';
+      if (dateStr === tomorrowStr) return 'tomorrow';
+
+      // Due This Week: days after tomorrow, through Saturday, but not today or tomorrow
+      // Does not apply on Friday (dow=5) or Saturday (dow=6)
+      if (dow <= 4) { // Sun=0 through Thu=4
+        if (dateStr > tomorrowStr && dateStr <= saturdayStr) return 'this_week';
+      }
+
+      // Due Next Week: only shown when today is Thu(4), Fri(5), or Sat(6)
+      if (dow >= 3) { // Wed, Thu, Fri, Sat
+        if (dateStr >= nextSundayStr && dateStr <= nextSaturdayStr) return 'next_week';
+      }
+
       return 'later';
+    }
+
+    function showNextWeekGroup() {
+      return getMountainDayOfWeek() >= 3; // Wed, Thu, Fri, Sat
     }
 
     function formatDate(dateStr) {
@@ -554,6 +741,8 @@
       document.getElementById('recurrenceDayWrapper').style.display = type === 'weekly' ? 'block' : 'none';
     }
 
+    // ─── Unhide recurring tasks ──────────────────────────────────
+
     async function unhideTasksIfNeeded(tasks) {
       const [ty, tm] = getMountainDate().split('-').map(Number);
       const toUnhide = tasks.filter(t => {
@@ -574,35 +763,49 @@
       return tasks;
     }
 
-    function refreshDataLists(tasks) {
-      const cats = [...new Set(tasks.map(t => t.category).filter(Boolean))].sort();
-      const clients = [...new Set(tasks.map(t => t.client).filter(Boolean))].sort();
-      document.getElementById('categoryList').innerHTML = cats.map(c => `<option value="${c}">`).join('');
-      document.getElementById('clientList').innerHTML = clients.map(c => `<option value="${c}">`).join('');
-    }
+    // ─── Filter bar ──────────────────────────────────────────────
 
     function updateFilterBar(tasks) {
       const cats = [...new Set(tasks.map(t => t.category).filter(Boolean))].sort();
+      const hasRecurring = tasks.some(t => t.recurrence_type);
       const bar = document.getElementById('filterBar');
-      if (cats.length === 0) { bar.style.display = 'none'; return; }
+
+      if (cats.length === 0 && !hasRecurring) { bar.style.display = 'none'; return; }
       bar.style.display = 'flex';
-      bar.querySelectorAll('[data-cat]:not([data-cat=""])').forEach(el => el.remove());
+
+      // Remove old chips except "All"
+      bar.querySelectorAll('[data-filter]:not([data-filter=""])').forEach(el => el.remove());
+
+      if (hasRecurring) {
+        const btn = document.createElement('button');
+        btn.className = 'filter-chip recurring-chip' + (activeFilter === 'recurring' ? ' active' : '');
+        btn.dataset.filter = 'recurring';
+        btn.textContent = 'Recurring';
+        btn.onclick = () => setFilter('recurring', btn);
+        bar.appendChild(btn);
+      }
+
       cats.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = 'filter-chip' + (activeFilter === cat ? ' active' : '');
-        btn.dataset.cat = cat;
+        btn.dataset.filter = cat;
         btn.textContent = cat;
         btn.onclick = () => setFilter(cat, btn);
         bar.appendChild(btn);
       });
+
+      allCategories = cats;
+      allClients = [...new Set(tasks.map(t => t.client).filter(Boolean))].sort();
     }
 
-    function setFilter(cat, btn) {
-      activeFilter = cat;
+    function setFilter(filter, btn) {
+      activeFilter = filter;
       document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderTaskList(allTasks);
     }
+
+    // ─── Recurring date helpers ──────────────────────────────────
 
     function getNextWeeklyDate(fromDateStr, recurrenceDay) {
       const [y, m, d] = fromDateStr.split('-').map(Number);
@@ -658,6 +861,8 @@
       }
     }
 
+    // ─── Load tasks ──────────────────────────────────────────────
+
     async function loadTasks() {
       try {
         const res = await fetch(
@@ -668,7 +873,8 @@
         let tasks = await res.json();
         tasks = await unhideTasksIfNeeded(tasks);
         allTasks = tasks.filter(t => !t.is_hidden);
-        refreshDataLists(allTasks);
+        allCategories = [...new Set(allTasks.map(t => t.category).filter(Boolean))].sort();
+        allClients = [...new Set(allTasks.map(t => t.client).filter(Boolean))].sort();
         updateFilterBar(allTasks);
         updateTitle(allTasks.length);
         renderTaskList(allTasks);
@@ -679,35 +885,52 @@
       }
     }
 
+    // ─── Render task list ────────────────────────────────────────
+
+    function getGroupConfig() {
+      const showNextWeek = showNextWeekGroup();
+      return {
+        overdue:   { label: 'Overdue',        cls: 'overdue',    tasks: [], defaultCollapsed: false },
+        today:     { label: 'Due Today',       cls: 'today',      tasks: [], defaultCollapsed: false },
+        tomorrow:  { label: 'Due Tomorrow',    cls: 'tomorrow',   tasks: [], defaultCollapsed: false },
+        this_week: { label: 'Due This Week',   cls: 'this-week',  tasks: [], defaultCollapsed: false },
+        next_week: { label: 'Due Next Week',   cls: 'next-week',  tasks: [], defaultCollapsed: false, hidden: !showNextWeek },
+        later:     { label: 'Coming Up',       cls: 'later',      tasks: [], defaultCollapsed: true  },
+        no_date:   { label: 'No Due Date',     cls: 'no-date',    tasks: [], defaultCollapsed: false }
+      };
+    }
+
+    function applyFilter(tasks) {
+      if (!activeFilter) return tasks;
+      if (activeFilter === 'recurring') return tasks.filter(t => t.recurrence_type);
+      return tasks.filter(t => t.category === activeFilter);
+    }
+
     function renderTaskList(tasks) {
       const container = document.getElementById('taskListContainer');
-      const filtered = activeFilter ? tasks.filter(t => t.category === activeFilter) : tasks;
-
-      const groups = {
-        overdue:   { label: 'Overdue',      cls: 'overdue',   tasks: [], defaultCollapsed: false },
-        today:     { label: 'Due Today',     cls: 'this-week', tasks: [], defaultCollapsed: false },
-        this_week: { label: 'Due This Week', cls: 'this-week', tasks: [], defaultCollapsed: false },
-        later:     { label: 'Coming Up',     cls: 'later',     tasks: [], defaultCollapsed: true  },
-        no_date:   { label: 'No Due Date',   cls: 'no-date',   tasks: [], defaultCollapsed: false }
-      };
+      const filtered = applyFilter(tasks);
+      const groups = getGroupConfig();
 
       filtered.forEach(t => {
         const s = getDueStatus(t.due_date);
         if (s === 'overdue') groups.overdue.tasks.push(t);
         else if (s === 'today') groups.today.tasks.push(t);
+        else if (s === 'tomorrow') groups.tomorrow.tasks.push(t);
         else if (s === 'this_week') groups.this_week.tasks.push(t);
+        else if (s === 'next_week') groups.next_week.tasks.push(t);
         else if (s === 'later') groups.later.tasks.push(t);
         else groups.no_date.tasks.push(t);
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div style="font-size:32px;margin-bottom:10px;">✓</div>No open tasks${activeFilter ? ' in this category' : ''}</div>`;
+        container.innerHTML = `<div class="empty-state"><div style="font-size:32px;margin-bottom:10px;">✓</div>No open tasks${activeFilter ? ' matching this filter' : ''}</div>`;
         return;
       }
 
       container.innerHTML = '';
       Object.entries(groups).forEach(([key, group]) => {
         if (group.tasks.length === 0) return;
+        if (group.hidden) return;
         container.appendChild(buildGroupElement(key, group));
       });
     }
@@ -727,7 +950,7 @@
       const body = document.createElement('div');
       body.className = `group-body ${group.defaultCollapsed ? 'collapsed' : ''}`;
       body.id = `group-body-${key}`;
-      group.tasks.forEach(t => body.appendChild(buildTaskCard(t)));
+      group.tasks.forEach(t => body.appendChild(buildTaskCard(t, false)));
       header.onclick = () => {
         const collapsed = body.classList.contains('collapsed');
         body.classList.toggle('collapsed', !collapsed);
@@ -738,23 +961,34 @@
       return wrapper;
     }
 
+    // ─── Render client view ──────────────────────────────────────
+
     function renderClientView(tasks) {
       const container = document.getElementById('clientListContainer');
       if (tasks.length === 0) {
         container.innerHTML = `<div class="empty-state"><div style="font-size:32px;margin-bottom:10px;">✓</div>No open tasks</div>`;
         return;
       }
+
       const clientMap = {};
       tasks.forEach(t => {
         const key = t.client || '__unassigned__';
         if (!clientMap[key]) clientMap[key] = [];
         clientMap[key].push(t);
       });
+
+      // Sort clients by their earliest due date task
+      function earliestDue(taskList) {
+        const dated = taskList.filter(t => t.due_date).map(t => t.due_date).sort();
+        return dated.length > 0 ? dated[0] : '9999-12-31';
+      }
+
       const sortedKeys = Object.keys(clientMap).sort((a, b) => {
         if (a === '__unassigned__') return 1;
         if (b === '__unassigned__') return -1;
-        return a.localeCompare(b);
+        return earliestDue(clientMap[a]).localeCompare(earliestDue(clientMap[b]));
       });
+
       container.innerHTML = '';
       sortedKeys.forEach(key => {
         container.appendChild(buildClientSection(key, key === '__unassigned__' ? 'Unassigned' : key, clientMap[key]));
@@ -774,18 +1008,22 @@
       body.className = 'client-section-body';
 
       const subgroups = {
-        overdue:   { label: 'Overdue',    cls: 'overdue',   tasks: [] },
-        today:     { label: 'Due Today',  cls: 'this-week', tasks: [] },
-        this_week: { label: 'This Week',  cls: 'this-week', tasks: [] },
-        later:     { label: 'Coming Up',  cls: 'later',     tasks: [] },
-        no_date:   { label: 'No Due Date',cls: 'no-date',   tasks: [] }
+        overdue:   { label: 'Overdue',      cls: 'overdue',   tasks: [] },
+        today:     { label: 'Due Today',    cls: 'today',     tasks: [] },
+        tomorrow:  { label: 'Due Tomorrow', cls: 'tomorrow',  tasks: [] },
+        this_week: { label: 'This Week',    cls: 'this-week', tasks: [] },
+        next_week: { label: 'Next Week',    cls: 'next-week', tasks: [] },
+        later:     { label: 'Coming Up',    cls: 'later',     tasks: [] },
+        no_date:   { label: 'No Due Date',  cls: 'no-date',   tasks: [] }
       };
 
       tasks.forEach(t => {
         const s = getDueStatus(t.due_date);
         if (s === 'overdue') subgroups.overdue.tasks.push(t);
         else if (s === 'today') subgroups.today.tasks.push(t);
+        else if (s === 'tomorrow') subgroups.tomorrow.tasks.push(t);
         else if (s === 'this_week') subgroups.this_week.tasks.push(t);
+        else if (s === 'next_week') subgroups.next_week.tasks.push(t);
         else if (s === 'later') subgroups.later.tasks.push(t);
         else subgroups.no_date.tasks.push(t);
       });
@@ -798,7 +1036,8 @@
         body.appendChild(subHeader);
         const subTasks = document.createElement('div');
         subTasks.className = 'client-subgroup-tasks';
-        group.tasks.forEach(t => subTasks.appendChild(buildTaskCard(t)));
+        // Pass inClientView=true to suppress client tag
+        group.tasks.forEach(t => subTasks.appendChild(buildTaskCard(t, true)));
         body.appendChild(subTasks);
       });
 
@@ -808,22 +1047,29 @@
       return wrapper;
     }
 
-    function buildTaskCard(task) {
+    // ─── Build task card ─────────────────────────────────────────
+
+    function buildTaskCard(task, inClientView) {
       const status = getDueStatus(task.due_date);
       const card = document.createElement('div');
-      card.className = 'task-card' + (status === 'overdue' ? ' overdue' : '') + (status === 'today' ? ' due-today' : '');
+      card.className = 'task-card' +
+        (status === 'overdue' ? ' overdue' : '') +
+        (status === 'today' ? ' due-today' : '') +
+        (status === 'tomorrow' ? ' due-tomorrow' : '');
       card.id = `task-${task.id}`;
 
       let dueHtml = '';
       if (task.due_date) {
-        const cls = status === 'overdue' ? 'overdue' : status === 'today' ? 'today' : '';
-        const label = status === 'overdue' ? `Overdue · ${formatDate(task.due_date)}` :
-                      status === 'today'   ? 'Due Today' : `Due ${formatDate(task.due_date)}`;
+        const cls = status === 'overdue' ? 'overdue' : status === 'today' ? 'today' : status === 'tomorrow' ? 'tomorrow' : '';
+        const label = status === 'overdue'  ? `Overdue · ${formatDate(task.due_date)}` :
+                      status === 'today'    ? 'Due Today' :
+                      status === 'tomorrow' ? 'Due Tomorrow' :
+                      `Due ${formatDate(task.due_date)}`;
         dueHtml = `<span class="due-label ${cls}">${label}</span>`;
       }
 
       const catHtml = task.category ? `<span class="category-tag">${task.category}</span>` : '';
-      const clientHtml = task.client ? `<span class="client-tag">${task.client}</span>` : '';
+      const clientHtml = (!inClientView && task.client) ? `<span class="client-tag">${task.client}</span>` : '';
 
       const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
       let recurHtml = '';
@@ -836,7 +1082,7 @@
       const hasNotes = task.notes && task.notes.trim().length > 0;
       const notesBtn = hasNotes ? `<button class="notes-toggle has-notes" id="notes-btn-${task.id}" onclick="toggleNotes('${task.id}')">📝 Notes</button>` : '';
       const snoozeBtn = task.due_date ? `<button class="action-btn" onclick="snoozeTask('${task.id}', '${task.due_date}')">Snooze 1 day</button>` : '';
-      const safeName = task.task_name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      const safeName = task.task_name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
       card.innerHTML = `
         <div class="task-top">
@@ -865,6 +1111,8 @@
       body.classList.toggle('open', !isOpen);
       if (btn) btn.textContent = isOpen ? '📝 Notes' : '📝 Hide notes';
     }
+
+    // ─── Add task ────────────────────────────────────────────────
 
     async function addTask() {
       const nameInput = document.getElementById('taskInput');
@@ -927,6 +1175,8 @@
       }
     }
 
+    // ─── Complete ────────────────────────────────────────────────
+
     async function completeTask(id) {
       const card = document.getElementById(`task-${id}`);
       if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
@@ -947,6 +1197,8 @@
       }
     }
 
+    // ─── Delete ──────────────────────────────────────────────────
+
     async function deleteTask(id, name) {
       if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
       const card = document.getElementById(`task-${id}`);
@@ -964,6 +1216,8 @@
         console.error(e);
       }
     }
+
+    // ─── Snooze ──────────────────────────────────────────────────
 
     async function snoozeTask(id, currentDueDate) {
       const card = document.getElementById(`task-${id}`);
@@ -987,6 +1241,8 @@
       }
     }
 
+    // ─── Edit ────────────────────────────────────────────────────
+
     function editTask(id) {
       const task = allTasks.find(t => t.id === id);
       const card = document.getElementById(`task-${id}`);
@@ -999,13 +1255,35 @@
       const eCat = (task.category || '').replace(/"/g, '&quot;');
       const eClient = (task.client || '').replace(/"/g, '&quot;');
       const eNotes = (task.notes || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const editCatDropId = `edit-cat-drop-${id}`;
+      const editClientDropId = `edit-client-drop-${id}`;
 
       card.innerHTML = `
         <div class="edit-form">
           <div><div class="field-label">Task</div><input class="edit-input" id="edit-name-${id}" type="text" value="${eName}" /></div>
           <div><div class="field-label">Due Date</div><input class="edit-field" id="edit-due-${id}" type="date" value="${task.due_date || ''}" style="max-width:200px;" /></div>
-          <div><div class="field-label">Category</div><input class="edit-field" id="edit-cat-${id}" type="text" value="${eCat}" list="categoryList" /></div>
-          <div><div class="field-label">Client</div><input class="edit-field" id="edit-client-${id}" type="text" value="${eClient}" list="clientList" /></div>
+          <div>
+            <div class="field-label">Category</div>
+            <div class="autocomplete-wrapper">
+              <input class="edit-field" id="edit-cat-${id}" type="text" value="${eCat}"
+                oninput="filterAutocomplete('edit-cat-${id}', '${editCatDropId}', allCategories)"
+                onfocus="filterAutocomplete('edit-cat-${id}', '${editCatDropId}', allCategories)"
+                onblur="closeDropdownDelayed('${editCatDropId}')"
+                onkeydown="handleAutocompleteKey(event, '${editCatDropId}', 'edit-cat-${id}')" />
+              <div class="autocomplete-dropdown" id="${editCatDropId}"></div>
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Client</div>
+            <div class="autocomplete-wrapper">
+              <input class="edit-field" id="edit-client-${id}" type="text" value="${eClient}"
+                oninput="filterAutocomplete('edit-client-${id}', '${editClientDropId}', allClients)"
+                onfocus="filterAutocomplete('edit-client-${id}', '${editClientDropId}', allClients)"
+                onblur="closeDropdownDelayed('${editClientDropId}')"
+                onkeydown="handleAutocompleteKey(event, '${editClientDropId}', 'edit-client-${id}')" />
+              <div class="autocomplete-dropdown" id="${editClientDropId}"></div>
+            </div>
+          </div>
           <div>
             <div class="field-label">Recurrence</div>
             <div class="recurrence-row">
@@ -1013,7 +1291,7 @@
                 <select class="edit-field" id="edit-rectype-${id}" onchange="handleEditRecurrenceChange('${id}')">
                   <option value="" ${!task.recurrence_type ? 'selected' : ''}>None</option>
                   <option value="weekly" ${task.recurrence_type === 'weekly' ? 'selected' : ''}>Weekly</option>
-                  <option value="monthly_end" ${task.recurrence_type === 'monthly_end' ? 'selected' : ''}>Monthly (end of month)</option>
+                  <option value="monthly_end" ${task.recurrence_type === 'monthly_end' ? 'selected' : ''}>Monthly</option>
                 </select>
               </div>
               <div id="edit-recday-wrapper-${id}" style="flex:1;display:${task.recurrence_type === 'weekly' ? 'block' : 'none'};">
@@ -1074,9 +1352,13 @@
       }
     }
 
+    // ─── Enter key ───────────────────────────────────────────────
+
     document.getElementById('taskInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') addTask();
     });
+
+    // ─── Init ────────────────────────────────────────────────────
 
     loadTasks();
   </script>
