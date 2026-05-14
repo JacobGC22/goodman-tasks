@@ -1,0 +1,68 @@
+name: Send Task Email
+
+on:
+  schedule:
+    - cron: '0 13 * * *'    # 7am MDT (UTC-6), daily
+    - cron: '0 14 * * *'    # 7am MST (UTC-7), daily
+    - cron: '30 22 * * 1-5' # 4:30pm MDT (UTC-6), weekdays
+    - cron: '30 23 * * 1-5' # 4:30pm MST (UTC-7), weekdays
+  workflow_dispatch:
+    inputs:
+      force_send:
+        description: 'Which email to send: morning or followup'
+        required: true
+        type: choice
+        options:
+          - morning
+          - followup
+
+jobs:
+  morning-email:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && (github.event.schedule == '0 13 * * *' || github.event.schedule == '0 14 * * *')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.force_send == 'morning')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pytz
+
+      - name: Send morning email
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SEND_TYPE: morning
+        run: python send_task_email.py
+
+  followup-email:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && (github.event.schedule == '30 22 * * 1-5' || github.event.schedule == '30 23 * * 1-5')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.force_send == 'followup')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pytz
+
+      - name: Send followup email
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SEND_TYPE: followup
+        run: python send_task_email.py
