@@ -817,11 +817,14 @@
     }
 
     function getMonthlyEndDate(fromDateStr) {
-      const [y, m] = fromDateStr.split('-').map(Number);
+      const [y, m, d] = fromDateStr.split('-').map(Number);
+      const lastDayThisMonth = new Date(y, m, 0).getDate();
+      const gapFromEnd = lastDayThisMonth - d;
       let nm = m + 1, ny = y;
       if (nm > 12) { nm = 1; ny++; }
-      const lastDay = new Date(ny, nm, 0).getDate();
-      return `${ny}-${String(nm).padStart(2,'0')}-${String(lastDay - 2).padStart(2,'0')}`;
+      const lastDayNextMonth = new Date(ny, nm, 0).getDate();
+      const targetDay = lastDayNextMonth - gapFromEnd;
+      return `${ny}-${String(nm).padStart(2,'0')}-${String(Math.max(1, targetDay)).padStart(2,'0')}`;
     }
 
     async function spawnNextRecurrence(completedTask) {
