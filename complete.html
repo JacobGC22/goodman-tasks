@@ -109,17 +109,13 @@
 
     async function spawnNextRecurrence(task) {
       if (!task.recurrence_type) return;
-      let nextDueDate, isHidden = false;
+      let nextDueDate;
 
       if (task.recurrence_type === 'weekly') {
         if (task.recurrence_day === null || task.recurrence_day === undefined) return;
         nextDueDate = getNextWeeklyDate(task.due_date || getMountainDate(), task.recurrence_day);
       } else if (task.recurrence_type === 'monthly_end') {
         nextDueDate = getMonthlyEndDate(task.due_date || getMountainDate());
-        const today = getMountainDate();
-        const [ty, tm] = today.split('-').map(Number);
-        const [ny, nm] = nextDueDate.split('-').map(Number);
-        if (ny > ty || nm > tm) isHidden = true;
       }
 
       if (!nextDueDate) return;
@@ -137,11 +133,12 @@
           due_date: nextDueDate,
           status: 'open',
           category: task.category || null,
+          client: task.client || null,
           notes: task.notes || null,
           recurrence_type: task.recurrence_type,
           recurrence_day: task.recurrence_day ?? null,
           parent_task_id: task.parent_task_id || task.id,
-          is_hidden: isHidden
+          is_hidden: false
         })
       });
       if (!res.ok) throw new Error('Failed to spawn next recurrence');
